@@ -8,7 +8,7 @@ Same data, same eval, only the mechanism changes. Each milestone is motivated by
 
 - `data/` — raw text, shared across every milestone
 - `common/data.py` — shared data loading, vocab, train/val split (same for every architecture)
-- `bigram/`, `mlp/`, `rnn/`, ... — one folder per milestone, model-specific code only
+- `n_grams/`, `mlp/`, `rnn/`, ... — one folder per milestone, model-specific code only
 
 ## Progress
 
