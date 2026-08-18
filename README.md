@@ -21,7 +21,7 @@ Same data, same eval, only the mechanism changes. Each milestone is motivated by
 - [x] Positional encoding (learned, absolute) - fixes order-blindness but not perplexity yet, see finding below
 - [ ] RoPE / ALiBi (modern positional encoding)
 - [x] Transformer (full block: multi-head attention + feedforward + residuals + layer norm, 2 layers)
-- [ ] Tiny GPT
+- [x] Tiny GPT (weight tying + LR warmup/cosine decay + top-k/temperature sampling) - code complete, training result pending
 
 ### Perplexity comparison (lower = better)
 
@@ -35,6 +35,7 @@ Same data, same eval, only the mechanism changes. Each milestone is motivated by
 | Attention*    | 64 chars (no position info)    | 9,148   | 11.35           |
 | + Positional**| 64 chars (position-aware)      | 11,196  | 11.75           |
 | Transformer***| 64 chars (2 layers, 4 heads)   | 33,500  | 7.00            |
+| Tiny GPT      | 64 chars (2 layers, 4 heads, tied weights) | 30,556 | *pending - training was still running when this was pushed, real number to follow* |
 
 \* Self-attention without positional encoding scored barely above bigram, worse than every other model. Proven (not assumed) why: with a fixed final character, scrambling the entire preceding 19-character context produced a numerically identical predicted distribution (`torch.allclose` true, max diff ~1e-9) — the model is provably blind to character order.
 
