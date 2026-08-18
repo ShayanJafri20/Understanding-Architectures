@@ -17,18 +17,20 @@ Same data, same eval, only the mechanism changes. Each milestone is motivated by
 - [x] MLP language model (3-char context, learned embeddings)
 - [x] RNN (unlimited context via hidden state)
 - [x] LSTM (gated memory, fixes vanishing gradients on longer sequences)
-- [ ] Attention (standalone)
+- [x] Self-attention, standalone (no positional encoding yet - see finding below)
+- [ ] Positional encoding (RoPE / ALiBi)
 - [ ] Transformer
 - [ ] Tiny GPT
 
 ### Perplexity comparison (lower = better)
 
-| Model    | Context                  | Params  | Val perplexity |
-|----------|---------------------------|---------|-----------------|
-| Bigram   | 1 char                    | 8,464   | 11.25           |
-| Trigram  | 2 chars                   | 778,688 | 6.76            |
-| MLP      | 3 chars (fixed)           | 19,612  | 5.27            |
-| RNN      | unlimited (hidden state)  | 32,028  | 4.91            |
-| LSTM     | unlimited (gated memory)  | 88,092  | 4.27            |
+| Model      | Context                  | Params  | Val perplexity |
+|------------|---------------------------|---------|-----------------|
+| Bigram     | 1 char                    | 8,464   | 11.25           |
+| Trigram    | 2 chars                   | 778,688 | 6.76            |
+| MLP        | 3 chars (fixed)           | 19,612  | 5.27            |
+| RNN        | unlimited (hidden state)  | 32,028  | 4.91            |
+| LSTM       | unlimited (gated memory)  | 88,092  | 4.27            |
+| Attention* | 64 chars (no position info) | 9,148 | 11.35           |
 
-Same data, same eval, every row — only the mechanism changes. MLP beats trigram with 40x fewer parameters by generalizing instead of memorizing exact contexts. RNN improves further by replacing the fixed context window with a hidden state that can in principle carry information across the whole sequence. LSTM's gated cell state pushes this further by fixing the vanishing-gradient limit that caps how much a plain RNN can actually remember.
+\* Self-attention without positional encoding scored barely above bigram, worse than every other model. Proven (not assumed) why: with a fixed final character, scrambling the entire preceding 19-character context produced a numerically identical predicted distribution (`torch.allclose` true, max diff ~1e-9) — the model is provably blind to character order. Plain self-attention only encodes *which side* of the causal mask a character is on, never *how far away* or *in what order*. This is exactly why positional encoding (next milestone) is a required component, not an optional add-on.
