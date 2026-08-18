@@ -13,5 +13,5 @@ Same data, same eval, only the mechanism changes. Each milestone is motivated by
 ## Progress
 
 - [x] Bigram character-level LM — data loading, count matrix, generation, perplexity (val perplexity: 11.25)
-- [ ] Trigram extension (2-char context)
+- [x] Trigram extension (2-char context) — val perplexity: 6.76, but sparsity artifacts already visible
 - [ ] MLP language model
